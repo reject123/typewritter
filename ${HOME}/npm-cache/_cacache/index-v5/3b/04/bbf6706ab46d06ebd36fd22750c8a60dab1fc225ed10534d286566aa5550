@@ -1,0 +1,2 @@
+
+071880978ba538283645d33f8bb1c0645595b55a	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/canvas","integrity":null,"time":1794067388180,"size":"262","metadata":{"time":1794067388180,"url":"https://registry.npm.taobao.org/canvas","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:08 GMT","location":"https://registry.npmmirror.com/canvas"},"options":{"compress":true},"status":301}}

@@ -1,0 +1,2 @@
+
+416a5b33311cd29cb0ffc460ad260eb91cb3dc51	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/webdriverio","integrity":null,"time":1794067387342,"size":"262","metadata":{"time":1794067387342,"url":"https://registry.npm.taobao.org/webdriverio","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:07 GMT","location":"https://registry.npmmirror.com/webdriverio"},"options":{"compress":true},"status":301}}

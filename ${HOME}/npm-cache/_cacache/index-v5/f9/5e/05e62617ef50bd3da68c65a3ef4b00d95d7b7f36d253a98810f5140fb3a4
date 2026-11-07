@@ -1,0 +1,2 @@
+
+b84f9439cc9a106832380d7ee0fc912d72c94d15	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/puppeteer-core","integrity":null,"time":1794067387491,"size":"262","metadata":{"time":1794067387491,"url":"https://registry.npm.taobao.org/puppeteer-core","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:07 GMT","location":"https://registry.npmmirror.com/puppeteer-core"},"options":{"compress":true},"status":301}}

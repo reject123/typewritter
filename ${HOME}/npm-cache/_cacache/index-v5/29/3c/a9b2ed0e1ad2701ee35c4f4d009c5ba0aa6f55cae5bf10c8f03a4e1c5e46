@@ -1,0 +1,2 @@
+
+e75d26b3292ec79090366ef4922c372dee90789e	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/@tauri-apps%2fcli-linux-arm64-musl","integrity":null,"time":1794067389459,"size":"262","metadata":{"time":1794067389459,"url":"https://registry.npm.taobao.org/@tauri-apps%2fcli-linux-arm64-musl","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:09 GMT","location":"https://registry.npmmirror.com/@tauri-apps%2fcli-linux-arm64-musl"},"options":{"compress":true},"status":301}}

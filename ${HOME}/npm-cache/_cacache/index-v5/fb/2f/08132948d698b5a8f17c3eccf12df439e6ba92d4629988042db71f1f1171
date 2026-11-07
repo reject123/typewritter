@@ -1,0 +1,2 @@
+
+b341afadaef90c6f548f562f0361c6ce1eee2771	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/sass","integrity":null,"time":1794067388473,"size":"262","metadata":{"time":1794067388473,"url":"https://registry.npm.taobao.org/sass","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:08 GMT","location":"https://registry.npmmirror.com/sass"},"options":{"compress":true},"status":301}}

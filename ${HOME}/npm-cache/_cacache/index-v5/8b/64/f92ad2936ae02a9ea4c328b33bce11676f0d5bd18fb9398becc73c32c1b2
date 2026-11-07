@@ -1,0 +1,2 @@
+
+6eaa817035941ebe39a9cc16e71a2762a2df4496	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/terser","integrity":null,"time":1794067388832,"size":"262","metadata":{"time":1794067388832,"url":"https://registry.npm.taobao.org/terser","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:08 GMT","location":"https://registry.npmmirror.com/terser"},"options":{"compress":true},"status":301}}

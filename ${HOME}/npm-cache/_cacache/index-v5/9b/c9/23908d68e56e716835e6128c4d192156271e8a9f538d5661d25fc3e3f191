@@ -1,0 +1,2 @@
+
+c7bdfcbc301d157ff1e8963a2cd088e2bcb52de8	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/@vitest%2fbrowser-preview","integrity":null,"time":1794067387168,"size":"262","metadata":{"time":1794067387168,"url":"https://registry.npm.taobao.org/@vitest%2fbrowser-preview","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:07 GMT","location":"https://registry.npmmirror.com/@vitest%2fbrowser-preview"},"options":{"compress":true},"status":301}}

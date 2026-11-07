@@ -1,0 +1,2 @@
+
+3bf0d15d23b90b903350a3b383ac66fec823ccb7	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/@vitest%2fbrowser","integrity":null,"time":1794067387759,"size":"262","metadata":{"time":1794067387758,"url":"https://registry.npm.taobao.org/@vitest%2fbrowser","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:07 GMT","location":"https://registry.npmmirror.com/@vitest%2fbrowser"},"options":{"compress":true},"status":301}}

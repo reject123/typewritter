@@ -1,0 +1,2 @@
+
+001c9302399524701747628ea5359a10f3a2a472	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/@tauri-apps%2fcli-darwin-x64","integrity":null,"time":1794067389390,"size":"262","metadata":{"time":1794067389389,"url":"https://registry.npm.taobao.org/@tauri-apps%2fcli-darwin-x64","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:09 GMT","location":"https://registry.npmmirror.com/@tauri-apps%2fcli-darwin-x64"},"options":{"compress":true},"status":301}}

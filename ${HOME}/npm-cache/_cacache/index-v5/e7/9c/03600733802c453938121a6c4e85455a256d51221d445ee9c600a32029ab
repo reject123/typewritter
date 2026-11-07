@@ -1,0 +1,2 @@
+
+ccb84d6b792cd8d39e35427296cc1ef5cc498ed9	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/lightningcss-darwin-arm64","integrity":null,"time":1794067389778,"size":"262","metadata":{"time":1794067389778,"url":"https://registry.npm.taobao.org/lightningcss-darwin-arm64","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:09 GMT","location":"https://registry.npmmirror.com/lightningcss-darwin-arm64"},"options":{"compress":true},"status":301}}

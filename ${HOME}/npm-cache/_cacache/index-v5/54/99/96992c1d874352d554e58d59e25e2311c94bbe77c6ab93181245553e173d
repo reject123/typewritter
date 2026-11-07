@@ -1,0 +1,2 @@
+
+f07314110e87b08031176bde9cc48017195d1ee2	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/detect-libc","integrity":null,"time":1794067389774,"size":"262","metadata":{"time":1794067389774,"url":"https://registry.npm.taobao.org/detect-libc","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:09 GMT","location":"https://registry.npmmirror.com/detect-libc"},"options":{"compress":true},"status":301}}

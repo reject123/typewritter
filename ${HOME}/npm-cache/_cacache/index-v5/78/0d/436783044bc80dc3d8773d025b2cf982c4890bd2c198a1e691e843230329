@@ -1,0 +1,2 @@
+
+7a93bbe36b2ac19c4325e39b2e5bc31ea5faab54	{"key":"make-fetch-happen:request-cache:https://registry.npm.taobao.org/yaml","integrity":null,"time":1794067388980,"size":"262","metadata":{"time":1794067388980,"url":"https://registry.npm.taobao.org/yaml","reqHeaders":{"accept":"application/json"},"resHeaders":{"content-type":"text/html","date":"Sat, 07 Nov 2026 16:03:08 GMT","location":"https://registry.npmmirror.com/yaml"},"options":{"compress":true},"status":301}}
