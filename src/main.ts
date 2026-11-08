@@ -1,4 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
+import { Terminal } from "@xterm/xterm";
+import { FitAddon } from "@xterm/addon-fit";
+import { WebglAddon } from "@xterm/addon-webgl";
+import { listen } from "@tauri-apps/api/event";
+import "@xterm/xterm/css/xterm.css";
 
 interface EntryInfo {
   name: string;
@@ -15,7 +20,6 @@ interface Listing {
 
 const pathEl = document.getElementById("path")!;
 const listEl = document.getElementById("list")!;
-const upBtn = document.getElementById("up") as HTMLButtonElement;
 
 let currentParent: string | null = null;
 
@@ -41,7 +45,6 @@ async function render(path?: string | null) {
     const listing = await invoke<Listing>("list_dir", { path: path ?? null });
     currentParent = listing.parent;
     pathEl.textContent = listing.current;
-    upBtn.disabled = !listing.parent;
 
     listEl.innerHTML = "";
     for (const entry of listing.entries) {
@@ -60,15 +63,56 @@ async function render(path?: string | null) {
   }
 }
 
+// 点击文件夹进入
 listEl.addEventListener("click", (e) => {
   const li = (e.target as HTMLElement).closest("li");
   if (!li || li.dataset.dir !== "true" || !li.dataset.path) return;
   void render(li.dataset.path);
 });
 
-upBtn.addEventListener("click", () => {
-  if (currentParent) void render(currentParent);
+// 可选：Alt + ↑ 返回上级（不需要就删掉这段）
+window.addEventListener("keydown", (e) => {
+  if (e.altKey && e.key === "ArrowUp") {
+    e.preventDefault();
+    if (currentParent) void render(currentParent);
+  }
 });
 
-// 初始打开当前工作目录（Tauri dev 下通常是项目根目录）
 void render(null);
+
+
+const term = new Terminal({
+  fontFamily: "Consolas, monospace",
+  fontSize: 13,
+  theme: { background: "#191919", foreground: "#ddd" },
+  cursorBlink: true,
+  allowTransparency: true,
+});
+
+const fit = new FitAddon();
+term.loadAddon(fit);
+term.open(document.getElementById("terminal")!);
+
+try {
+  term.loadAddon(new WebglAddon());
+} catch (e) {
+  console.warn("WebGL 不可用，回退默认渲染器", e);
+}
+
+async function fitTerminal() {
+  fit.fit();
+  await invoke("resize_pty", { rows: term.rows, cols: term.cols });
+}
+
+term.onData((data) => void invoke("write_to_pty", { data }));
+
+async function initTerminal() {
+  await listen<string>("pty-output", (ev) => term.write(ev.payload));
+  // cwd 传 null 用进程当前目录；想让终端落在文件管理器当前路径，
+  // 把下面的 null 换成 currentPath 即可
+  await invoke("create_shell", { cwd: null });
+  await fitTerminal();
+}
+
+window.addEventListener("resize", () => void fitTerminal());
+void initTerminal();

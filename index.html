@@ -52,6 +52,13 @@
         overflow-y: auto;
         flex: 1;
       }
+      #terminal {
+      height: 240px;
+      flex-shrink: 0;
+      border-top: 1px solid #333;
+      padding: 4px 8px;
+      box-sizing: border-box;
+      }
       #list li {
         display: flex;
         align-items: center;
@@ -83,10 +90,10 @@
   <body>
     <div id="app">
       <div id="toolbar">
-        <button id="up">↑ 上级</button>
         <span id="path"></span>
       </div>
       <ul id="list"></ul>
+      <div id="terminal"></div>
     </div>
   </body>
 </html>

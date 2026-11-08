@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TypeWritter 文件管理器</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #1e1e1e;
+        color: #ddd;
+        font-family: Consolas, "Courier New", monospace;
+      }
+      #app {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      #toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        border-bottom: 1px solid #333;
+        flex-shrink: 0;
+      }
+      #up {
+        background: #333;
+        color: #ddd;
+        border: none;
+        padding: 4px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-family: inherit;
+      }
+      #up:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      #path {
+        font-size: 13px;
+        color: #8ab4f8;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+        flex: 1;
+      }
+      #list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-bottom: 1px solid #262626;
+      }
+      #list li[data-dir="true"] {
+        cursor: pointer;
+      }
+      #list li:hover {
+        background: #2a2a2a;
+      }
+      .icon {
+        width: 20px;
+        text-align: center;
+      }
+      .name {
+        flex: 1;
+      }
+      .size {
+        color: #888;
+        font-size: 12px;
+      }
+    </style>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div id="toolbar">
+        <button id="up">↑ 上级</button>
+        <span id="path"></span>
+      </div>
+      <ul id="list"></ul>
+    </div>
+  </body>
+</html>
