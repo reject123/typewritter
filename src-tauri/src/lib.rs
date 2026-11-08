@@ -79,6 +79,35 @@ fn list_dir(path: Option<String>) -> Result<Listing, String> {
     })
 }
 
+#[tauri::command]
+fn get_startup_dir() -> Result<String, String> {
+    // 优先读环境变量
+    if let Ok(dir) = std::env::var("TWR_CWD") {
+        // 去掉空白、去掉可能被包上的引号
+        let cleaned = dir.trim().trim_matches('"').trim().to_string();
+        if !cleaned.is_empty() {
+            return Ok(cleaned);
+        }
+    }
+
+    // 备选：--cwd 参数
+    let args: Vec<String> = std::env::args().collect();
+    for i in 0..args.len() {
+        if args[i] == "--cwd" && i + 1 < args.len() {
+            let cleaned = args[i + 1].trim().trim_matches('"').trim().to_string();
+            if !cleaned.is_empty() {
+                return Ok(cleaned);
+            }
+        }
+    }
+
+    // 回退
+    std::env::current_dir()
+        .map(|p| p.to_string_lossy().to_string())
+        .map_err(|e| e.to_string())
+}
+
+
 #[derive(Default)]
 struct PtyState {
     writer: Mutex<Option<Box<dyn Write + Send>>>,
@@ -101,14 +130,39 @@ fn create_shell(
         .map_err(|e| e.to_string())?;
 
     #[cfg(target_os = "windows")]
-    let mut cmd = CommandBuilder::new("powershell.exe");
+    let mut cmd = {
+        let script = r#"if (Test-Path $PROFILE) { . $PROFILE }
+Remove-Item function:prompt -ErrorAction SilentlyContinue
+if ($env:TWR_CWD) { Set-Location -LiteralPath $env:TWR_CWD }
+function prompt {
+    $p = (Get-Location).Path
+    [Console]::Write([char]27 + ']0;' + $p + [char]7)
+    'PS ' + $p + '> '
+}
+"#;        
+        let script_path = std::env::temp_dir().join("twr_init.ps1");
+        std::fs::write(&script_path, script).map_err(|e| e.to_string())?;
+
+        let mut c = CommandBuilder::new("powershell.exe");
+        c.arg("-NoLogo");
+        c.arg("-NoExit");
+        c.arg("-ExecutionPolicy");
+        c.arg("Bypass");
+        c.arg("-File");
+        c.arg(script_path.to_string_lossy().to_string());
+        c
+    };
+
     #[cfg(not(target_os = "windows"))]
     let mut cmd = CommandBuilder::new(
         std::env::var("SHELL").unwrap_or_else(|_| "bash".to_string())
     );
 
     cmd.env("TERM", "xterm-256color");
-    if let Some(dir) = cwd {
+    if let Some(ref dir) = cwd {
+        // 显式传给 PowerShell，CommandBuilder 不会自动继承父进程环境变量
+        cmd.env("TWR_CWD", dir);
+        // 同时设进程初始工作目录
         cmd.cwd(dir);
     }
 
@@ -166,7 +220,8 @@ tauri::Builder::default()
         list_dir,
         create_shell,
         write_to_pty,
-        resize_pty
+        resize_pty,
+        get_startup_dir
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

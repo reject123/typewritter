@@ -21,7 +21,22 @@ interface Listing {
 const pathEl = document.getElementById("path")!;
 const listEl = document.getElementById("list")!;
 
+let selectedIndex = 0;
+
+function updateSelection() {
+  const items = listEl.querySelectorAll("li");
+  items.forEach((li, i) => {
+    li.classList.toggle("selected", i === selectedIndex);
+  });
+  (items[selectedIndex] as HTMLElement | undefined)?.scrollIntoView({
+    block: "nearest",
+  });
+}
+
 let currentParent: string | null = null;
+let currentPath = "";
+let terminalReady = false;
+let syncingFromTerminal = false;
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -45,7 +60,7 @@ async function render(path?: string | null) {
     const listing = await invoke<Listing>("list_dir", { path: path ?? null });
     currentParent = listing.parent;
     pathEl.textContent = listing.current;
-
+    currentPath = listing.current;
     listEl.innerHTML = "";
     for (const entry of listing.entries) {
       const li = document.createElement("li");
@@ -58,27 +73,70 @@ async function render(path?: string | null) {
       `;
       listEl.appendChild(li);
     }
+    selectedIndex = 0;
+    updateSelection();
+    if (terminalReady && !syncingFromTerminal) {
+      const escaped = listing.current.replace(/'/g, "''");
+      await invoke("write_to_pty", { data: `cd '${escaped}'\r` });
+    }
   } catch (e) {
-    alert(`读取目录失败：${e}`);
+    console.error(`读取目录失败（请求路径: ${path ?? "(null)"}）:`, e);
+    alert(`读取目录失败：${e}\n请求路径：${path ?? "(null)"}`);
   }
 }
 
 // 点击文件夹进入
 listEl.addEventListener("click", (e) => {
   const li = (e.target as HTMLElement).closest("li");
-  if (!li || li.dataset.dir !== "true" || !li.dataset.path) return;
+  if (!li || !li.dataset.path) return;
+
+  // 同步选中索引
+  const items = Array.from(listEl.querySelectorAll("li"));
+  selectedIndex = items.indexOf(li as HTMLLIElement);
+  updateSelection();
+
+  if (li.dataset.dir !== "true") return;
   void render(li.dataset.path);
 });
 
-// 可选：Alt + ↑ 返回上级（不需要就删掉这段）
-window.addEventListener("keydown", (e) => {
-  if (e.altKey && e.key === "ArrowUp") {
+listEl.addEventListener("keydown", (e) => {
+  const items = listEl.querySelectorAll("li");
+  if (items.length === 0) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+    updateSelection();
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    selectedIndex = Math.max(selectedIndex - 1, 0);
+    updateSelection();
+  } else if (e.key === "Home") {
+    e.preventDefault();
+    selectedIndex = 0;
+    updateSelection();
+  } else if (e.key === "End") {
+    e.preventDefault();
+    selectedIndex = items.length - 1;
+    updateSelection();
+  } else if (e.key === "Enter") {
+    e.preventDefault();
+    const li = items[selectedIndex] as HTMLElement;
+    if (li?.dataset.dir === "true" && li.dataset.path) {
+      void render(li.dataset.path);
+    }
+  } else if (e.key === "Escape") {
+    e.preventDefault();
+    if (currentParent) void render(currentParent);
+  } else if (e.altKey && e.key === "ArrowUp") {
     e.preventDefault();
     if (currentParent) void render(currentParent);
   }
 });
 
-void render(null);
+let startupDir = "";
+startupDir = await invoke<string>("get_startup_dir");
+void render(startupDir);
 
 
 const term = new Terminal({
@@ -92,6 +150,22 @@ const term = new Terminal({
 const fit = new FitAddon();
 term.loadAddon(fit);
 term.open(document.getElementById("terminal")!);
+term.attachCustomKeyEventHandler((e) => {
+  // 只处理纯 F1 按键
+  if (e.type === "keydown" && e.key === "F1" && !e.ctrlKey && !e.altKey && !e.shiftKey) {
+    // 1. 显式阻止默认行为和事件冒泡
+    e.preventDefault();
+    e.stopPropagation();
+
+    // 2. 将焦点切回文件列表
+    listEl.focus();
+
+    // 3. 返回 false，告诉 xterm 不要处理这个按键
+    return false; 
+  }
+  // 对于其他按键，返回 true，让 xterm 正常处理
+  return true;
+});
 
 try {
   term.loadAddon(new WebglAddon());
@@ -108,11 +182,37 @@ term.onData((data) => void invoke("write_to_pty", { data }));
 
 async function initTerminal() {
   await listen<string>("pty-output", (ev) => term.write(ev.payload));
+  term.onTitleChange((title) => {
+    const cleaned = title.trim();
+    // 只处理 Windows 绝对路径格式（D:\... / C:\...）
+    if (!/^[A-Za-z]:\\/.test(title)) return;
+    if (/\.(exe|dll|com|bat|cmd|ps1|msi|sys|scr|cpl)$/i.test(cleaned)) return;
+    // 路径没变就不重复渲染
+    if (title === currentPath) return;
+
+    syncingFromTerminal = true;
+    void render(title).finally(() => {
+      syncingFromTerminal = false;
+    });
+  });
   // cwd 传 null 用进程当前目录；想让终端落在文件管理器当前路径，
   // 把下面的 null 换成 currentPath 即可
-  await invoke("create_shell", { cwd: null });
+  await invoke("create_shell", { cwd: startupDir });
+  terminalReady = true;
   await fitTerminal();
+  listEl.focus();
 }
 
 window.addEventListener("resize", () => void fitTerminal());
 void initTerminal();
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "F1") {
+    e.preventDefault();
+    if (document.activeElement === listEl) {
+      term.focus();
+    } else {
+      listEl.focus();
+    }
+  }
+});

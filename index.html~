@@ -25,19 +25,6 @@
         border-bottom: 1px solid #333;
         flex-shrink: 0;
       }
-      #up {
-        background: #333;
-        color: #ddd;
-        border: none;
-        padding: 4px 10px;
-        cursor: pointer;
-        border-radius: 4px;
-        font-family: inherit;
-      }
-      #up:disabled {
-        opacity: 0.4;
-        cursor: default;
-      }
       #path {
         font-size: 13px;
         color: #8ab4f8;
@@ -52,6 +39,13 @@
         overflow-y: auto;
         flex: 1;
       }
+      #terminal {
+      height: 240px;
+      flex-shrink: 0;
+      border-top: 1px solid #333;
+      padding: 4px 8px;
+      box-sizing: border-box;
+      }
       #list li {
         display: flex;
         align-items: center;
@@ -64,6 +58,12 @@
       }
       #list li:hover {
         background: #2a2a2a;
+      }
+      #list:focus{
+	outline: none;
+      }
+      #list li.selected{
+	background: #2a4a6a;
       }
       .icon {
         width: 20px;
@@ -83,10 +83,10 @@
   <body>
     <div id="app">
       <div id="toolbar">
-        <button id="up">↑ 上级</button>
         <span id="path"></span>
       </div>
-      <ul id="list"></ul>
+      <ul id="list" tabindex="0"></ul>
+      <div id="terminal"></div>
     </div>
   </body>
 </html>
